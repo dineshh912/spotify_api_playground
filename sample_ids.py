@@ -1,0 +1,2 @@
+ALBUM_ID = "4aawyAB9vmqN3uQ7FjRGTy"
+MULTI_ALBUMS_ID = "4aawyAB9vmqN3uQ7FjRGTy,2Trr2hDsIKFt6I6rbmi0Yr"
