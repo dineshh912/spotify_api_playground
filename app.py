@@ -1,3 +1,4 @@
+from webbrowser import get
 import requests
 import config
 import sample_ids
@@ -35,8 +36,6 @@ def get_available_market():
     available_market_res = requests.get(f'{config.BASE_URL}/markets',
                                         headers=headers)
     return available_market_res.json()  
-
-pprint(get_available_market())
 
 
 ########## ALBUM ######################################
@@ -95,54 +94,113 @@ def get_new_releases():
 
 ########## ARTIST ######################################
 
+def get_artist(artist_id):
+    """
+        Get the artist information using artist id
+        input: artist_id: artist id (string)
+        output: artist object
+    """
+    artist_res = requests.get(f'{config.BASE_URL}/artists/{artist_id}',
+                              headers=headers)
+    return artist_res.json()
 
 
+def get_artists(artist_id):
+    """
+        Get multiple artist information using artist id
+        output: list of artist objects
+        Query Parameters: ids: integer (0-50)
+
+    """
+    artists_res = requests.get(f'{config.BASE_URL}/artists?ids={artist_id}',
+                               headers=headers)
+    return artists_res.json()
 
 
+def get_artist_albums(artist_id):
+    """
+        Get the albums of the artist using artist id
+        input: artist_id: artist id (string)
+        output: list of album objects
+        Query Parameters: limit: integer (0-50) default: 20
+                            offset: integer  default: 0
+                            market: Country: ISO 3166-1 alpha-2 country code.
+                            include_groups: string (album, single, appears_on, compilation)
+    """
+    artist_albums_res = requests.get(f'{config.BASE_URL}/artists/{artist_id}/albums',
+                                     headers=headers)
+    return artist_albums_res.json()
 
 
+def get_artist_top_tracks(artist_id):
+    """
+        Get the top tracks of the artist using artist id
+        input: artist_id: artist id (string)
+        output: list of track objects
+        Query Parameters: market: Country: ISO 3166-1 alpha-2 country code.
+    """
+    artist_top_tracks_res = requests.get(f'{config.BASE_URL}/artists/{artist_id}/top-tracks?country=US',
+                                         headers=headers)
+    return artist_top_tracks_res.json()
 
 
+def get_related_artists(artist_id):
+    """
+        Get related artists based on artist id
+        input: artist_id: artist id (string)
+        output: list of artist objects
+    """
+    related_artists_res = requests.get(f'{config.BASE_URL}/artists/{artist_id}/related-artists',
+                                       headers=headers)
+    return related_artists_res.json()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+########## TRACK ######################################
 
 def get_track_info(track_id):
     """
-    Get the track information using track id
+        Get the track information using track id
+        input: track_id: track id (string)
     """
-    track_res = requests.get(config.BASE_URL + 'tracks/' + track_id, headers=headers)
+    track_res = requests.get(f'{config.BASE_URL}/tracks/{track_id}',
+                             headers=headers)
     return track_res.json()
 
+    
+########## SHOWS ######################################
 
-def get_audio_features(track_id):
+def get_show(show_id, market):
     """
-    Get the audio features of the track using track id
+        Get the show information using show id
+        input: show_id: show id (string)
+        output: show object
+        Query Parameters: market: Country: ISO 3166-1 alpha-2 country code.(required)
     """
-    audio_features_res = requests.get(config.BASE_URL + 'audio-features/' + track_id, headers=headers)
-    return audio_features_res.json()
+    show_res = requests.get(f'{config.BASE_URL}/shows/{show_id}?market={market}',
+                            headers=headers)
+    return show_res.json()
 
 
-def get_audio_analysis(track_id):
+def get_shows(show_ids, market):
     """
-    Get the audio analysis of the track using track id
+        Get multiple show information using show id
+        input: show_ids: list of show ids (string)
+        output: list of show objects
+        Query Parameters: market: Country: ISO 3166-1 alpha-2 country code.(required)
     """
-    audio_analysis_res = requests.get(config.BASE_URL + 'audio-analysis/' + track_id, headers=headers)
-    return audio_analysis_res.json()
+    shows_res = requests.get(f'{config.BASE_URL}/shows?ids={show_ids}&market={market}',
+                             headers=headers)
+    return shows_res.json()
+
+
+def get_show_episodes(show_id, market):
+    """
+        Get the episodes of the show using show id
+        input: show_id: show id (string)
+        output: list of episode objects
+        Query Parameters: market: Country: ISO 3166-1 alpha-2 country code.(required)
+                          limit: integer (0-50) default: 20
+                            offset: integer  default: 0
+    """
+    show_episodes_res = requests.get(f'{config.BASE_URL}/shows/{show_id}/episodes?market={market}',
+                                     headers=headers)
+    return show_episodes_res.json()
